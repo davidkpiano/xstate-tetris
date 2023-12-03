@@ -1,10 +1,14 @@
-import React from 'react';
-import { viewMatrix } from './Game';
+import { ActorRefFrom } from 'xstate';
+import { tetrisMachine, viewMatrix } from './Game';
 import { getClassName } from './Piece';
-import { Context } from './context';
+import { useSelector } from '@xstate/react';
 
-export default function GameboardView(): JSX.Element {
-  const game = React.useContext(Context);
+export function GameboardView({
+  actorRef,
+}: {
+  actorRef: ActorRefFrom<typeof tetrisMachine>;
+}): JSX.Element {
+  const game = useSelector(actorRef, (state) => state.context);
   const matrix = viewMatrix(game);
 
   return (

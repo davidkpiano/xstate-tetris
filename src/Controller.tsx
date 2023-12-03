@@ -6,7 +6,7 @@ type Props = {
   actorRef: ActorRefFrom<typeof tetrisMachine>;
 };
 
-export default function Controller({ actorRef }: Props): JSX.Element {
+export function Controller({ actorRef }: Props): JSX.Element {
   return (
     <div
       style={{

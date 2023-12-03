@@ -12,7 +12,7 @@ const defaultBlock = [
   [0, 0, 0, 0],
 ] as const;
 
-const PieceView: React.FC<Props> = ({ piece }): JSX.Element => {
+export const PieceView: React.FC<Props> = ({ piece }): JSX.Element => {
   const fromPiece = piece && getBlocks(piece)[0];
   const blocks = fromPiece ?? defaultBlock;
 
@@ -37,5 +37,3 @@ const PieceView: React.FC<Props> = ({ piece }): JSX.Element => {
     </table>
   );
 };
-
-export default PieceView;

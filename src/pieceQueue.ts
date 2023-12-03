@@ -66,8 +66,6 @@ function pullFromBucket(bucket: Piece[]): [Piece, Piece[]] {
   return [randomPiece, local];
 }
 
-export default PieceQueue;
-
 function randomNumber(under: number): number {
   return Math.floor(Math.random() * under);
 }

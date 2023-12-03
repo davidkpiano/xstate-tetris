@@ -13,7 +13,7 @@ import {
   hardDrop,
   moveLeft,
 } from './Matrix';
-import Constants from './constants';
+import { Constants } from './constants';
 import * as PieceQueue from './pieceQueue';
 import { AnyEventObject, assign, fromCallback, raise, setup } from 'xstate';
 

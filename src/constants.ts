@@ -1,4 +1,4 @@
-export default {
+const Constants = {
   // dimensions in "cells"
   GAME_WIDTH: 10,
   GAME_HEIGHT: 20,
@@ -6,3 +6,5 @@ export default {
   BLOCK_HEIGHT: 4,
   ROTATION_COUNT: 4,
 };
+
+export { Constants };

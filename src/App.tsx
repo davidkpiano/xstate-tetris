@@ -1,25 +1,13 @@
 import React from 'react';
-import Gameboard from './Gameboard';
+import { GameboardView } from './Gameboard';
 import * as Game from './Game';
-import HeldPiece from './HeldPiece';
-import { Context } from './context';
-import { KeyboardMap } from './useKeyboardControls';
-import { ActorRefFrom } from 'xstate';
+import { HeldPiece } from './HeldPiece';
 import { useActor } from '@xstate/react';
 import { PiecesInQueue } from './PiecesInQueue';
 // styled-components
 import styled from 'styled-components';
 
-export type RenderFn = (params: {
-  HeldPiece: React.ComponentType;
-  Gameboard: React.ComponentType;
-  PieceQueue: React.ComponentType;
-  points: number;
-  linesCleared: number;
-  level: number;
-  state: Game.State;
-  actorRef: ActorRefFrom<(typeof Game)['tetrisMachine']>;
-}) => React.ReactElement;
+export type KeyboardMap = Record<string, Game.Action>;
 
 const defaultKeyboardMap: KeyboardMap = {
   ArrowDown: { type: 'MOVE_DOWN' },
@@ -57,7 +45,7 @@ function useKeyboardControls(
 }
 
 import { createBrowserInspector } from '@statelyai/inspect';
-import Controller from './Controller';
+import { Controller } from './Controller';
 
 const { inspect } = createBrowserInspector({
   url: 'http://localhost:3000/registry/inspect',
@@ -68,112 +56,6 @@ const { inspect } = createBrowserInspector({
     return true;
   },
 });
-
-// const bank = createMachine({
-//   id: 'bank',
-//   after: {
-//     1000: {
-//       actions: sendTo(
-//         ({ system }) => {
-//           const ledger = system.get('ledger');
-//           console.log({ ledger });
-//           return ledger;
-//         },
-//         ({ self }) => ({
-//           type: 'retrieveAccount',
-//           sender: self
-//         })
-//       )
-//     }
-//   },
-//   on: {
-//     buyersAccount: {
-//       actions: sendTo(
-//         ({ system }) => system.get('account'),
-//         ({ self }) => ({
-//           type: 'getBalance',
-//           sender: self
-//         })
-//       )
-//     }
-//   }
-// });
-
-// const ledger = createMachine({
-//   id: 'ledger',
-//   on: {
-//     retrieveAccount: {
-//       actions: sendTo(({ event }) => event.sender, {
-//         type: 'buyersAccount'
-//       })
-//     }
-//   }
-// });
-
-// const account = createMachine({
-//   id: 'account',
-//   on: {
-//     getBalance: {
-//       actions: sendTo(({ event }) => event.sender, {
-//         type: 'balance'
-//       })
-//     }
-//   }
-// });
-
-// const main = createMachine({
-//   id: 'main',
-//   invoke: [
-//     {
-//       systemId: 'bank',
-//       src: bank
-//     },
-//     {
-//       systemId: 'ledger',
-//       src: ledger
-//     },
-//     {
-//       systemId: 'account',
-//       src: account
-//     }
-//   ]
-// });
-
-// const actor = createActor(main, {
-//   inspect: (event) => {
-//     console.log('>>', event);
-
-//     inspect.next(event);
-//   }
-// });
-
-// actor.start();
-
-export function Tetris(props: {
-  keyboardControls?: KeyboardMap;
-  children: RenderFn;
-}): JSX.Element {
-  const [state, send, actorRef] = useActor(Game.tetrisMachine, { inspect });
-
-  const game = state.context;
-  const keyboardMap = props.keyboardControls ?? defaultKeyboardMap;
-  useKeyboardControls(keyboardMap, send);
-  const level = Game.getLevel(game);
-  return (
-    <Context.Provider value={game}>
-      {props.children({
-        HeldPiece,
-        Gameboard,
-        PieceQueue: PiecesInQueue,
-        points: game.points,
-        linesCleared: game.lines,
-        state: game.state,
-        level,
-        actorRef,
-      })}
-    </Context.Provider>
-  );
-}
 
 const Container = styled.div`
   margin: 24px auto 0;
@@ -238,72 +120,71 @@ const Button = styled.button`
   border-radius: 4px;
 `;
 
-const GamePanel = (): JSX.Element => {
+const GamePanel = (props: any): JSX.Element => {
+  const [gameState, send, actorRef] = useActor(Game.tetrisMachine, { inspect });
+  const game = gameState.context;
+  const points = game.points;
+  const linesCleared = game.lines;
+  const state = game.state;
+  const level = Game.getLevel(game);
+  const keyboardMap = props.keyboardControls ?? defaultKeyboardMap;
+  useKeyboardControls(keyboardMap, send);
+
   return (
     <Container>
-      <Tetris>
-        {({
-          Gameboard,
-          HeldPiece,
-          PieceQueue,
-          points,
-          linesCleared,
-          state,
-          actorRef,
-        }) => (
-          <div>
-            <div style={{ opacity: state === 'PLAYING' ? 1 : 0.5 }}>
-              <Score>
-                <LeftHalf>
-                  <p>
-                    points
-                    <br />
-                    <Digits>{points}</Digits>
-                  </p>
-                </LeftHalf>
-                <RightHalf>
-                  <p>
-                    lines
-                    <br />
-                    <Digits>{linesCleared}</Digits>
-                  </p>
-                </RightHalf>
-              </Score>
+      <div>
+        <div style={{ opacity: state === 'PLAYING' ? 1 : 0.5 }}>
+          <Score>
+            <LeftHalf>
+              <p>
+                points
+                <br />
+                <Digits>{points}</Digits>
+                <br />
+                level {level}
+              </p>
+            </LeftHalf>
+            <RightHalf>
+              <p>
+                lines
+                <br />
+                <Digits>{linesCleared}</Digits>
+              </p>
+            </RightHalf>
+          </Score>
 
-              <LeftColumn>
-                <HeldPiece />
-              </LeftColumn>
+          <LeftColumn>
+            <HeldPiece actorRef={actorRef} />
+          </LeftColumn>
 
-              <MiddleColumn>
-                <Gameboard />
-              </MiddleColumn>
+          <MiddleColumn>
+            <GameboardView actorRef={actorRef} />
+          </MiddleColumn>
 
-              <RightColumn>
-                <PieceQueue />
-              </RightColumn>
+          <RightColumn>
+            <PiecesInQueue actorRef={actorRef} />
+          </RightColumn>
 
-              <Controller actorRef={actorRef} />
-            </div>
-            {state === 'PAUSED' && (
-              <Popup>
-                <Alert>Paused</Alert>
-                <Button onClick={() => actorRef.send({ type: 'RESUME' })}>
-                  Resume
-                </Button>
-              </Popup>
-            )}
-
-            {state === 'LOST' && (
-              <Popup>
-                <Alert>Game Over</Alert>
-                <Button onClick={() => actorRef.send({ type: 'RESTART' })}>
-                  Start
-                </Button>
-              </Popup>
-            )}
-          </div>
+          <Controller actorRef={actorRef} />
+        </div>
+        {state === 'PAUSED' && (
+          <Popup>
+            <Alert>Paused</Alert>
+            <Button onClick={() => actorRef.send({ type: 'RESUME' })}>
+              Resume
+            </Button>
+          </Popup>
         )}
-      </Tetris>
+
+        {state === 'LOST' && (
+          <Popup>
+            <Alert>Game Over</Alert>
+            <Button onClick={() => actorRef.send({ type: 'RESTART' })}>
+              Start
+            </Button>
+          </Popup>
+        )}
+      </div>
     </Container>
   );
 };

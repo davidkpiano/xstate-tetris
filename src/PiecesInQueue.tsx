@@ -1,9 +1,15 @@
-import React from 'react';
-import PieceView from './PieceView';
-import { Context } from './context';
+import { ActorRefFrom } from 'xstate';
+import { PieceView } from './PieceView';
 
-export function PiecesInQueue(): JSX.Element {
-  const { queue } = React.useContext(Context);
+import { useSelector } from '@xstate/react';
+import { tetrisMachine } from './Game';
+
+export function PiecesInQueue({
+  actorRef,
+}: {
+  actorRef: ActorRefFrom<typeof tetrisMachine>;
+}): JSX.Element {
+  const queue = useSelector(actorRef, (state) => state.context.queue);
   return (
     <div>
       {queue.queue.map((piece, i) => (

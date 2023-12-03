@@ -1,8 +1,12 @@
-import React from 'react';
-import PieceView from './PieceView';
-import { Context } from './context';
+import { AnyActorRef } from 'xstate';
+import { PieceView } from './PieceView';
+import { useSelector } from '@xstate/react';
 
-export default function HeldPiece(): JSX.Element {
-  const { heldPiece } = React.useContext(Context);
+export function HeldPiece({
+  actorRef,
+}: {
+  actorRef: AnyActorRef;
+}): JSX.Element {
+  const heldPiece = useSelector(actorRef, (state) => state.context.heldPiece);
   return <PieceView piece={heldPiece?.piece} />;
 }

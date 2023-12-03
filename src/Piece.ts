@@ -1,4 +1,4 @@
-import Constants from './constants';
+import { Constants } from './constants';
 
 export const pieces = <const>['I', 'J', 'L', 'O', 'S', 'T', 'Z'];
 export type Piece = (typeof pieces)[number];
