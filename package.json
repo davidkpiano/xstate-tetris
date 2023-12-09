@@ -4,31 +4,32 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "prepare": "panda codegen",
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@statelyai/inspect": "^0.0.5",
+    "@statelyai/inspect": "^0.0.6",
     "@xstate/react": "^4.0.0",
     "keymaster": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "styled-components": "^6.1.1",
-    "xstate": "^5.0.0"
+    "xstate": "^5.1.0"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.20.1",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.16",
     "eslint": "^8.53.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"
   }

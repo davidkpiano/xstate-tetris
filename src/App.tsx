@@ -47,21 +47,24 @@ function useKeyboardControls(
 import { createBrowserInspector } from '@statelyai/inspect';
 import { Controller } from './Controller';
 
-const { inspect } = createBrowserInspector({
-  url: 'http://localhost:3000/registry/inspect',
-  filter: (event) => {
-    if (event.type === '@xstate.event' || event.type === '@xstate.snapshot') {
-      return event.event.type !== 'TICK';
-    }
-    return true;
-  },
-});
+// const { inspect } = createBrowserInspector({
+//   url: 'http://localhost:3000/registry/inspect',
+//   filter: (event) => {
+//     if (event.type === '@xstate.event' || event.type === '@xstate.snapshot') {
+//       return event.event.type !== 'TICK';
+//     }
+//     return true;
+//   },
+// });
 
 const Container = styled.div`
   margin: 24px auto 0;
   width: 100%;
   max-width: 376px;
 `;
+
+// Convert the above to Tailwind
+const containerClass = '';
 
 const Score = styled.div`
   position: relative;
@@ -121,7 +124,11 @@ const Button = styled.button`
 `;
 
 const GamePanel = (props: any): JSX.Element => {
-  const [gameState, send, actorRef] = useActor(Game.tetrisMachine, { inspect });
+  const [gameState, send, actorRef] = useActor(Game.tetrisMachine, {
+    inspect: (ev) => {
+      // inspect.next?.(ev);
+    },
+  });
   const game = gameState.context;
   const points = game.points;
   const linesCleared = game.lines;
@@ -131,61 +138,62 @@ const GamePanel = (props: any): JSX.Element => {
   useKeyboardControls(keyboardMap, send);
 
   return (
-    <Container>
+    <div
+      className="w-full flex justify-center"
+      style={{ opacity: state === 'PLAYING' ? 1 : 0.5 }}
+    >
       <div>
-        <div style={{ opacity: state === 'PLAYING' ? 1 : 0.5 }}>
-          <Score>
-            <LeftHalf>
-              <p>
-                points
-                <br />
-                <Digits>{points}</Digits>
-                <br />
-                level {level}
-              </p>
-            </LeftHalf>
-            <RightHalf>
-              <p>
-                lines
-                <br />
-                <Digits>{linesCleared}</Digits>
-              </p>
-            </RightHalf>
-          </Score>
+        <Score>
+          <LeftHalf>
+            <p>
+              points
+              <br />
+              <Digits>{points}</Digits>
+              <br />
+              level {level}
+            </p>
+          </LeftHalf>
+          <RightHalf>
+            <p>
+              lines
+              <br />
+              <Digits>{linesCleared}</Digits>
+            </p>
+          </RightHalf>
+        </Score>
 
-          <LeftColumn>
-            <HeldPiece actorRef={actorRef} />
-          </LeftColumn>
+        <LeftColumn>
+          <HeldPiece actorRef={actorRef} />
+        </LeftColumn>
 
-          <MiddleColumn>
-            <GameboardView actorRef={actorRef} />
-          </MiddleColumn>
+        <MiddleColumn>
+          <GameboardView actorRef={actorRef} />
+        </MiddleColumn>
 
-          <RightColumn>
-            <PiecesInQueue actorRef={actorRef} />
-          </RightColumn>
+        <RightColumn>
+          <PiecesInQueue actorRef={actorRef} />
+        </RightColumn>
 
-          <Controller actorRef={actorRef} />
-        </div>
-        {state === 'PAUSED' && (
-          <Popup>
-            <Alert>Paused</Alert>
-            <Button onClick={() => actorRef.send({ type: 'RESUME' })}>
-              Resume
-            </Button>
-          </Popup>
-        )}
-
-        {state === 'LOST' && (
-          <Popup>
-            <Alert>Game Over</Alert>
-            <Button onClick={() => actorRef.send({ type: 'RESTART' })}>
-              Start
-            </Button>
-          </Popup>
-        )}
+        <Controller actorRef={actorRef} />
       </div>
-    </Container>
+      {state === 'PAUSED' && (
+        <Popup>
+          <Alert>Paused</Alert>
+          <Button onClick={() => actorRef.send({ type: 'RESUME' })}>
+            Resume
+          </Button>
+        </Popup>
+      )}
+
+      {state === 'LOST' && (
+        <Popup>
+          <Alert>Game Over</Alert>
+          <Button onClick={() => actorRef.send({ type: 'RESTART' })}>
+            Start
+          </Button>
+        </Popup>
+      )}
+    </div>
   );
 };
 
