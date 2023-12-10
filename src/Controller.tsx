@@ -4,9 +4,10 @@ import styled from 'styled-components';
 
 type Props = {
   actorRef: ActorRefFrom<typeof tetrisMachine>;
+  style: React.CSSProperties;
 };
 
-export function Controller({ actorRef }: Props): JSX.Element {
+export function Controller({ actorRef, style }: Props): JSX.Element {
   return (
     <div
       style={{
@@ -14,6 +15,7 @@ export function Controller({ actorRef }: Props): JSX.Element {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '24px 12px',
+        ...style,
       }}
     >
       <div

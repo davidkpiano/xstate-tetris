@@ -210,21 +210,22 @@ export const getBlocks = (piece: Piece): number[][][] => {
 export const getClassName = (piece: Piece | 'ghost'): string => {
   switch (piece) {
     case 'I':
-      return 'piece-i';
+      return 'bg-sky-500';
     case 'J':
-      return 'piece-j';
+      // dark blue
+      return 'bg-blue-500';
     case 'L':
-      return 'piece-l';
+      return 'bg-orange-500';
     case 'O':
-      return 'piece-o';
+      return 'bg-yellow-500';
     case 'S':
-      return 'piece-s';
+      return 'bg-green-500';
     case 'T':
-      return 'piece-t';
+      return 'bg-red-500';
     case 'Z':
-      return 'piece-z';
+      return 'bg-purple-500';
     case 'ghost':
-      return 'piece-preview';
+      return 'bg-gray-200';
     default: {
       const exhaustiveCheck: never = piece;
       throw new Error(`Unhandled piece case: ${exhaustiveCheck}`);

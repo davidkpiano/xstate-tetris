@@ -12,11 +12,11 @@ export function GameboardView({
   const matrix = viewMatrix(game);
 
   return (
-    <table className="game-board">
+    <table className="border-gray-200 border-2">
       <tbody>
         {matrix.map((row, i) => {
           const blocksInRow = row.map((block, j) => {
-            const classString = `game-block ${
+            const classString = `h-4 w-4 ${
               block ? getClassName(block) : 'block-empty'
             }`;
             return <td key={j} className={classString} />;

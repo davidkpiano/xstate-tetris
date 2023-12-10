@@ -57,46 +57,11 @@ import { Controller } from './Controller';
 //   },
 // });
 
-const Container = styled.div`
-  margin: 24px auto 0;
-  width: 100%;
-  max-width: 376px;
-`;
-
-// Convert the above to Tailwind
-const containerClass = '';
-
 const Score = styled.div`
   position: relative;
   font-family: monospace;
   font-size: 18px;
   color: #888;
-`;
-
-const LeftHalf = styled.div`
-  display: inline-block;
-  width: 50%;
-`;
-
-const RightHalf = styled(LeftHalf)`
-  text-align: right;
-`;
-
-const Column = styled.div`
-  display: inline-block;
-  vertical-align: top;
-`;
-
-const LeftColumn = styled(Column)`
-  width: 88px;
-`;
-
-const RightColumn = styled(LeftColumn)`
-  padding-left: 15px;
-`;
-
-const MiddleColumn = styled(Column)`
-  width: 200px;
 `;
 
 const Popup = styled.div`
@@ -142,39 +107,54 @@ const GamePanel = (props: any): JSX.Element => {
       className="w-full flex justify-center"
       style={{ opacity: state === 'PLAYING' ? 1 : 0.5 }}
     >
-      <div>
-        <Score>
-          <LeftHalf>
-            <p>
-              points
-              <br />
-              <Digits>{points}</Digits>
-              <br />
-              level {level}
-            </p>
-          </LeftHalf>
-          <RightHalf>
-            <p>
-              lines
-              <br />
-              <Digits>{linesCleared}</Digits>
-            </p>
-          </RightHalf>
-        </Score>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr',
+          gridTemplateRows: 'auto auto',
+        }}
+        className="gap-4"
+      >
+        <div
+          style={{
+            gridColumn: '1 / -1',
+          }}
+        >
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'auto 1fr',
+              gridAutoRows: 'auto',
+            }}
+            className="gap-x-2"
+          >
+            <strong>points</strong>
+            <div>{points}</div>
+            <strong>level</strong>
+            <div>{level}</div>
+            <strong>lines</strong>
+            <div>{linesCleared}</div>
+          </div>
+        </div>
 
-        <LeftColumn>
+        <div style={{ gridColumn: '1 / 2' }}>
           <HeldPiece actorRef={actorRef} />
-        </LeftColumn>
+        </div>
 
-        <MiddleColumn>
+        <div style={{ gridColumn: '2 / 3' }}>
           <GameboardView actorRef={actorRef} />
-        </MiddleColumn>
+        </div>
 
-        <RightColumn>
+        <div style={{ gridColumn: '3 / 4' }}>
           <PiecesInQueue actorRef={actorRef} />
-        </RightColumn>
+        </div>
 
-        <Controller actorRef={actorRef} />
+        <Controller
+          actorRef={actorRef}
+          style={{
+            gridColumn: '1 / 4',
+          }}
+        />
       </div>
       {state === 'PAUSED' && (
         <Popup>
@@ -194,33 +174,6 @@ const GamePanel = (props: any): JSX.Element => {
         </Popup>
       )}
     </div>
-  );
-};
-
-const Digit = styled.span`
-  font-family: monospace;
-  padding: 1px;
-  margin: 1px;
-  font-size: 24px;
-`;
-
-type DigitsProps = {
-  children: number;
-  count?: number;
-};
-const Digits = ({ children, count = 4 }: DigitsProps): JSX.Element => {
-  let str = children.toString();
-
-  while (str.length < count) {
-    str = `${0}${str}`;
-  }
-
-  return (
-    <>
-      {str.split('').map((digit, index) => (
-        <Digit key={index}>{digit}</Digit>
-      ))}
-    </>
   );
 };
 

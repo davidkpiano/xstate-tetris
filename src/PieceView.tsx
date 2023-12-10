@@ -18,7 +18,7 @@ export const PieceView: React.FC<Props> = ({ piece }): JSX.Element => {
 
   const rows = blocks.map((row, i) => {
     const blocksInRow = row.map((block, j) => {
-      let classString = 'game-block ';
+      let classString = 'h-4 w-4 ';
 
       if (piece && block) {
         classString += getClassName(piece);
@@ -32,7 +32,11 @@ export const PieceView: React.FC<Props> = ({ piece }): JSX.Element => {
     return <tr key={i}>{blocksInRow}</tr>;
   });
   return (
-    <table className="piece-view">
+    <table
+      style={{
+        borderColor: 'transparent',
+      }}
+    >
       <tbody>{rows}</tbody>
     </table>
   );
